@@ -5,14 +5,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace app.Models;
 
 [Table("tasks")]
-public class Task
+public class TaskItem
 {
     [Key]
     public int Id { get; set; }
     public int ProjectId { get; set; }
     public string Title { get; set; }
     public string Description { get; set; }
-    public TaskStatus Statuc { get; set; }
+    public TaskStatus Status { get; set; }
     public TaskPriority Priority { get; set; }
     public DateTime? DueDate { get; set; }
     public DateTime CreatedAt { get; set; }

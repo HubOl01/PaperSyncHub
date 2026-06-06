@@ -7,14 +7,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace app.Repositories;
 
-public class BibliographyRepository : RepositoryBase<Bibliography>
+public class BibliographyRepository : RepositoryBase<BibliographyItem>
 {
     public BibliographyRepository(ApplicationDbContext context)
         : base(context)
     {
     }
 
-    public async Task<List<Bibliography>> GetByProjectIdAsync(int projectId)
+    public async Task<List<BibliographyItem>> GetByProjectIdAsync(int projectId)
     {
         return await Context.Bibliography
             .Where(x => x.ProjectId == projectId)

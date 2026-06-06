@@ -2,9 +2,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="app.App"
              xmlns:local="using:app"
-             RequestedThemeVariant="Default">
+             RequestedThemeVariant="Light">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
-
+             <Application.Resources>
+                 <SolidColorBrush x:Key="SecondBackground">#4F46E5</SolidColorBrush>
+                 <SolidColorBrush x:Key="SecondHoverBackground">#3730A3</SolidColorBrush>
+                 <SolidColorBrush x:Key="PrimaryBackground">White</SolidColorBrush>
+                 <SolidColorBrush x:Key="PrimaryBarBackground">WhiteSmoke</SolidColorBrush>
+             </Application.Resources>
     <Application.DataTemplates>
         <local:ViewLocator/>
     </Application.DataTemplates>

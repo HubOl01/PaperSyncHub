@@ -9,9 +9,9 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<Artifact> Artifacts => Set<Artifact>();
 
-    public DbSet<Task> Tasks => Set<Task>();
+    public DbSet<TaskItem> Tasks => Set<TaskItem>();
 
-    public DbSet<Bibliography> Bibliography => Set<Bibliography>();
+    public DbSet<BibliographyItem> Bibliography => Set<BibliographyItem>();
 
     public DbSet<GitCommit> GitCommits => Set<GitCommit>();
 

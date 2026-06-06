@@ -8,9 +8,9 @@ namespace app.Models;
 public class GitCommit
 {
     [Key]
-    public string Id { get; set; }
-    public int ProjectId { get; set; }
     public string CommitHash { get; set; }
+    public int ProjectId { get; set; }
+
     public string Message { get; set; }
     public string AuthorName { get; set; }
     public DateTime CreatedAt { get; set; }

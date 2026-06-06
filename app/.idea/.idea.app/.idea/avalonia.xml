@@ -5,7 +5,11 @@
       <map>
         <entry key="App.axaml" value="app.csproj" />
         <entry key="CompletedBinding.axaml" value="app.csproj" />
+        <entry key="Styles/AppDefaultStyles.axaml" value="app.csproj" />
+        <entry key="Views/HomePageView.axaml" value="app.csproj" />
         <entry key="Views/MainWindow.axaml" value="app.csproj" />
+        <entry key="Views/ProjectListView.axaml" value="app.csproj" />
+        <entry key="Views/ProjectPageView.axaml" value="app.csproj" />
       </map>
     </option>
   </component>

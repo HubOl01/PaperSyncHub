@@ -8,7 +8,7 @@ namespace app.Models;
 public class Artifact
 {
     [Key]
-    public int id { get; set; }
+    public int Id { get; set; }
     public int ProjectId { get; set; }
     public ArtifactType Type { get; set; }
     public string Title { get; set; }

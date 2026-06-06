@@ -10,15 +10,15 @@ public class Project
 {
     [Key]
     public int Id { get; set; }
-    public string Name { get; set; }
+    public string Name { get; set; } = "Новый проект";
     public string LocalPath { get; set; }
     public string GitCommitHash { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
     
     public ICollection<Artifact>? Artifacts { get; set; } = new List<Artifact>();
-    public ICollection<Task>? Tasks { get; set; } = new List<Task>();
-    public ICollection<Bibliography>? Bibliographies { get; set; } = new List<Bibliography>();
+    public ICollection<TaskItem>? Tasks { get; set; } = new List<TaskItem>();
+    public ICollection<BibliographyItem>? Bibliographies { get; set; } = new List<BibliographyItem>();
     public ICollection<GitCommit>? GitCommits { get; set; } = new List<GitCommit>();
     
 }

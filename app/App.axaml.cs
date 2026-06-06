@@ -21,7 +21,8 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-          var db = new ApplicationDbContext();
+        var db = new ApplicationDbContext();
+        // db.Database.EnsureCreated();
         db.Database.Migrate();
         
 

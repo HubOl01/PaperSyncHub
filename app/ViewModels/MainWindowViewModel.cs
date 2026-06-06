@@ -1,20 +1,22 @@
-﻿using app.Repositories;
+﻿using app.Models;
+using app.Repositories;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace app.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    public string Greeting { get; } = "Hi ^_^ !";
-    public string Greeting2 { get; } = "Hi :~) !";
+    [ObservableProperty]
+    private ViewModelBase _currentPage;
     
     
-    private readonly ProjectRepository _projectRepository;
-    private readonly ArtifactRepository _artifactRepository;
-    private readonly TaskRepository _taskRepository;
-    private readonly BibliographyRepository _bibliographyRepository;
-    private readonly GitCommitRepository _gitCommitRepository;
-    private readonly ArtifactDependencyRepository _artifactDependencyRepository;
-    private readonly ExecutionLogRepository _executionLogRepository;
+    public readonly ProjectRepository ProjectRepo;
+    public readonly ArtifactRepository ArtifactRepo;
+    public readonly TaskRepository TaskRepo;
+    public readonly BibliographyRepository BibliographyRepo;
+    public readonly GitCommitRepository GitCommitRepo;
+    public readonly ArtifactDependencyRepository ArtifactDependencyRepo;
+    public readonly ExecutionLogRepository ExecutionLogRepo;
     public MainWindowViewModel(
         ProjectRepository projectRepository,
         ArtifactRepository artifactRepository,
@@ -24,12 +26,18 @@ public partial class MainWindowViewModel : ViewModelBase
         ArtifactDependencyRepository artifactDependencyRepository,
         ExecutionLogRepository executionLogRepository)
     {
-        _projectRepository = projectRepository;
-        _artifactRepository = artifactRepository;
-        _taskRepository = taskRepository;
-        _bibliographyRepository = bibliographyRepository;
-        _gitCommitRepository = gitCommitRepository;
-        _artifactDependencyRepository = artifactDependencyRepository;
-        _executionLogRepository = executionLogRepository;
+        ProjectRepo = projectRepository;
+        ArtifactRepo = artifactRepository;
+        TaskRepo = taskRepository;
+        BibliographyRepo = bibliographyRepository;
+        GitCommitRepo = gitCommitRepository;
+        ArtifactDependencyRepo = artifactDependencyRepository;
+        ExecutionLogRepo = executionLogRepository;
+        _currentPage = new HomePageViewModel(this);
+    }
+    
+    public void NavigateToProject(Project project)
+    {
+        CurrentPage = new ProjectPageViewModel(project, this, ArtifactRepo, GitCommitRepo);
     }
 }
