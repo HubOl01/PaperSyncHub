@@ -9,27 +9,52 @@
     <Grid RowDefinitions="Auto,*,Auto">
         <!-- Топбар -->
         <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto">
-            <TextBlock Grid.Column="0" Text="ОргСтатья" FontWeight="Bold" FontSize="18"
-                       Foreground="#6B4EFF" VerticalAlignment="Center" Margin="12"/>
-            <!-- Клик по названию — через Interaction Trigger или кнопку-призрак -->
-            <Button Grid.Column="1" Background="Transparent"
-                    Command="{Binding RenameProjectCommand}"
-                    HorizontalAlignment="Center">
-                <TextBlock Text="{Binding ProjectName}" FontSize="16"/>
+            <Button Classes="transparent" Command="{Binding SaveProjectCommand}">
+                <Svg Path="/Assets/logo_org.svg" Height="30"/>
             </Button>
+            <!-- Клик по названию — через Interaction Trigger или кнопку-призрак -->
+            <!-- Вместо Button с TextBlock -->
+            <Panel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+    
+                <!-- Режим просмотра: клик активирует редактирование -->
+                <Button Classes="transparent"
+                        Command="{Binding RenameProjectCommand}"
+                        IsVisible="{Binding !IsRenamingProject}">
+                    <TextBlock Text="{Binding ProjectName}" FontSize="16"/>
+                </Button>
+
+                <!-- Режим редактирования -->
+                <StackPanel Orientation="Horizontal" Spacing="6"
+                            IsVisible="{Binding IsRenamingProject}">
+                    <TextBox Text="{Binding NewProjectName}"
+                             FontSize="16"
+                             MinWidth="200"
+                             BorderThickness="0,0,0,2"
+                             BorderBrush="#4F46E5"
+                             Background="Transparent"/>
+                    <Button Classes="icons" Command="{Binding ConfirmRenameCommand}"
+                            ToolTip.Tip="Сохранить">
+                        <Svg Path="/Assets/save.svg" Height="20" Width="20"/>
+                    </Button>
+                    <Button Classes="icons" Command="{Binding CancelRenameCommand}"
+                            ToolTip.Tip="Отмена">
+                        <Svg Path="/Assets/close.svg" Height="20" Width="20"/>
+                    </Button>
+                </StackPanel>
+            </Panel>
             <!-- Иконки справа -->
             <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="10" Margin="12">
                 <Button Classes="icons" Command="{Binding SaveProjectCommand}">
-                    <Svg Path="/Assets/templates.svg" Height="20" Width="20"/>
+                    <Svg Path="/Assets/templates.svg" Height="30" Width="30"/>
                 </Button>
                 <Button Classes="icons" Command="{Binding ShowCommitsCommand}">
-                    <Svg Path="/Assets/task.svg" Height="20" Width="20"/>
+                    <Svg Path="/Assets/task.svg" Height="30" Width="30"/>
                 </Button>
                 <!-- <Button Classes="icons" Command="{Binding SaveProjectCommand}"> -->
                 <!--     <Svg Path="/Assets/save.svg" Height="20" Width="20"/> -->
                 <!-- </Button> -->
                 <Button Classes="icons" Command="{Binding ShowCommitsCommand}">
-                    <Svg Path="/Assets/exit.svg" Height="20" Width="20"/>
+                    <Svg Path="/Assets/exit.svg" Height="30" Width="30"/>
                 </Button>
             </StackPanel>
         </Grid>

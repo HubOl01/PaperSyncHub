@@ -63,12 +63,21 @@ public partial class ProjectPageViewModel : ViewModelBase
         NewProjectName = ProjectName;
         IsRenamingProject = true;
     }
-
     [RelayCommand]
-    private void ConfirmRename()
+    private void CancelRename()
+    {
+        IsRenamingProject = false;
+    }
+    [RelayCommand]
+    private async Task ConfirmRename()
     {
         if (!string.IsNullOrWhiteSpace(NewProjectName))
+        {
             ProjectName = NewProjectName;
+            _project.Name = NewProjectName;
+            _project.UpdatedAt = DateTime.UtcNow;
+            await _main.ProjectRepo.UpdateAsync(_project);
+        }
         IsRenamingProject = false;
     }
     
