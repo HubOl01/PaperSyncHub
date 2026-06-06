@@ -1,0 +1,47 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:app.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="app.Views.HomePageView"
+             x:DataType="vm:HomePageViewModel">
+    
+    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="20">
+        <Svg Path="/Assets/logo_org_large.svg" Height="50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        
+        <StackPanel Orientation="Horizontal" Spacing="20">
+            <!-- Кнопка с плюсиком -->
+            <Border Background="White" 
+                    Width="120" 
+                    Height="120" 
+                    CornerRadius="12"
+                    BoxShadow="0 4 12 0 #1A000000">
+                <Button Command="{Binding CreateProjectCommand}"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Width="120"
+                        Height="120"
+                        CornerRadius="12">
+                    <Svg Path="/Assets/add_plus.svg" Height="50" Width="50"/>
+                </Button>
+            </Border>
+            
+            <!-- Кнопка с папкой -->
+            <Border Background="White" 
+                    Width="120" 
+                    Height="120" 
+                    CornerRadius="12"
+                    BoxShadow="0 4 12 0 #1A000000">
+                <Button Command="{Binding OpenProjectCommand}"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Width="120"
+                        Height="120"
+                        CornerRadius="12">
+                    <Svg Path="/Assets/folders.svg" Height="50" Width="50"/>
+                </Button>
+            </Border>
+        </StackPanel>
+    </StackPanel>
+</UserControl>
