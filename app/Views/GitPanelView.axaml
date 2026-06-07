@@ -1,0 +1,89 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:app.ViewModels"
+             xmlns:models="clr-namespace:app.Models"
+             x:Class="app.Views.GitPanelView"
+             x:DataType="vm:GitPanelViewModel">
+    <Grid RowDefinitions="Auto,Auto,*">
+
+        <!-- Шапка с кнопкой открыть форму -->
+        <Border Grid.Row="0" Padding="12,10" Background="White"
+                BoxShadow="0 2 4 0 #18000000">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="20">
+                <TextBlock Text="История изменений" FontSize="16"
+                           FontWeight="Bold" Foreground="#4F46E5"
+                           VerticalAlignment="Center"/>
+                <Button Grid.Column="1" Command="{Binding OpenCommitDialogCommand}"
+                        IsVisible="{Binding !IsCommitDialogVisible}"
+                        Padding="10 5"
+                        CornerRadius="5"
+                       >
+                    <TextBlock Text="Новая версия" FontSize="12"/>
+                </Button>
+            </Grid>
+        </Border>
+
+        <!-- Форма создания коммита — появляется под шапкой -->
+        <Border Grid.Row="1" Background="#EFEFFF"
+                Padding="12" IsVisible="{Binding IsCommitDialogVisible}">
+            <StackPanel Spacing="8">
+                <TextBlock Text="Описание изменений:" FontWeight="SemiBold"/>
+                <TextBox Watermark="Что изменилось в этой версии?"
+                         Text="{Binding CommitMessage}"
+                         Height="60" AcceptsReturn="True"/>
+                <StackPanel Orientation="Horizontal" Spacing="8" >
+                    <Button Content="Сохранить" Command="{Binding ConfirmCommitCommand}"
+                            Background="#4F46E5" Foreground="White" FontSize="14" Padding="12 8"
+                            CornerRadius="8"/>
+                    <Button Content="Отмена"  Background="#83000000" Foreground="White" Command="{Binding CancelCommitCommand}" FontSize="14" Padding="12 8"
+                            CornerRadius="8"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- Список коммитов всегда виден -->
+        <ScrollViewer Grid.Row="2" Padding="8">
+            <StackPanel Spacing="6">
+
+                <!-- Пусто -->
+                <TextBlock IsVisible="{Binding !Commits.Count}"
+                           Text="Версий пока нет. Нажмите «Новая версия»."
+                           Foreground="Gray" TextAlignment="Center"
+                           Margin="0,40,0,0" TextWrapping="Wrap"/>
+
+                <!-- Коммиты -->
+                <ItemsControl ItemsSource="{Binding Commits}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="models:GitCommit">
+                            <Border Background="White" CornerRadius="8"
+                                    BoxShadow="0 2 6 0 #18000000"
+                                    Padding="12,8" Margin="0,0,0,6">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <StackPanel Grid.Column="0" Spacing="4">
+                                        <TextBlock Text="{Binding Message}"
+                                                   FontWeight="SemiBold"
+                                                   TextWrapping="Wrap"/>
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <TextBlock Text="{Binding CommitHash}"
+                                                       Foreground="#4F46E5" FontSize="11"
+                                                       FontFamily="Courier New"/>
+                                            <TextBlock Text="{Binding CreatedAt, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}"
+                                                       Foreground="Gray" FontSize="11"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <Button Grid.Column="1" Classes="icons"
+                                            Command="{Binding $parent[ItemsControl].((vm:GitPanelViewModel)DataContext).RollbackToCommand}"
+                                            CommandParameter="{Binding}"
+                                            ToolTip.Tip="Откатить до этой версии">
+                                        <Svg Path="/Assets/git_sync.svg" Height="20" Width="20"/>
+                                    </Button>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

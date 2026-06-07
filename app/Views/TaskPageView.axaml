@@ -1,0 +1,132 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:app.ViewModels"
+             xmlns:models="clr-namespace:app.Models"
+             x:Class="app.Views.TaskPageView"
+             x:DataType="vm:TaskPageViewModel">
+    <Grid ColumnDefinitions="*,Auto">
+
+        <!-- Левая панель: список задач -->
+        <ScrollViewer Grid.Column="0" Padding="16">
+            <StackPanel Spacing="12">
+                <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Text="Задачи:" FontSize="22" FontWeight="Bold"
+                               Foreground="#4F46E5" VerticalAlignment="Center"/>
+                    <Button Grid.Column="1" Classes="icons" Command="{Binding OpenNewTaskCommand}"
+                            ToolTip.Tip="Новая задача">
+                        <Svg Path="/Assets/add_plus.svg" Height="28" Width="28"/>
+                    </Button>
+                </Grid>
+
+                <!-- Активные задачи -->
+                <ItemsControl ItemsSource="{Binding ActiveTasks}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="models:TaskItem">
+                            <Border Background="White" CornerRadius="8"
+                                    BoxShadow="0 2 6 0 #18000000" Margin="0,0,0,6" Padding="12,8">
+                                <Grid ColumnDefinitions="*,Auto,Auto,Auto">
+                                    <TextBlock Grid.Column="0" Text="{Binding Title}"
+                                               FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                    <!-- Приоритет -->
+                                    <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="8,0"
+                                               Text="{Binding Priority, Converter={StaticResource PriorityConverter}}"/>
+                                    <!-- Статус — кликабельный -->
+                                    <Button Grid.Column="2" Classes="transparent"
+                                            Command="{Binding $parent[ItemsControl].((vm:TaskPageViewModel)DataContext).CycleStatusCommand}"
+                                            CommandParameter="{Binding}"
+                                            Margin="8,0">
+                                        <!-- <TextBlock Text="{Binding Status}" FontSize="13"/> -->
+                                        <TextBlock Text="{Binding Status, Converter={StaticResource StatusConverter}}" FontSize="13"/>
+                                    </Button>
+                                    <!-- Редактировать -->
+                                    <StackPanel Grid.Column="3" Orientation="Horizontal">
+                                        <Button Classes="icons"
+                                                Command="{Binding $parent[ItemsControl].((vm:TaskPageViewModel)DataContext).EditTaskCommand}"
+                                                CommandParameter="{Binding}">
+                                            <Svg Path="/Assets/edit.svg" Height="18" Width="18"/>
+                                        </Button>
+                                        <Button Classes="icons"
+                                                Command="{Binding $parent[ItemsControl].((vm:TaskPageViewModel)DataContext).DeleteTaskCommand}"
+                                                CommandParameter="{Binding}">
+                                            <Svg Path="/Assets/delete.svg" Height="18" Width="18"/>
+                                        </Button>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <!-- Завершённые -->
+                <TextBlock Text="Завершённые:" FontWeight="Bold" Margin="0,12,0,4"/>
+                <ItemsControl ItemsSource="{Binding DoneTasks}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="models:TaskItem">
+                            <Border Background="#F5F5F5" CornerRadius="8"
+                                    Margin="0,0,0,6" Padding="12,8">
+                                <Grid ColumnDefinitions="*,Auto,Auto,Auto">
+                                    <TextBlock Grid.Column="0" Text="{Binding Title}"
+                                               Foreground="Gray" VerticalAlignment="Center"/>
+                                    <Button Grid.Column="2" Classes="transparent"
+                                            Command="{Binding $parent[ItemsControl].((vm:TaskPageViewModel)DataContext).CycleStatusCommand}"
+                                            CommandParameter="{Binding}"
+                                            Margin="8,0">
+                                        <!-- <TextBlock Text="{Binding Status}" FontSize="13" Foreground="#4CAF50"/> -->
+                                        <TextBlock Text="{Binding Status, Converter={StaticResource StatusConverter}}" FontSize="13" Foreground="#4CAF50"/>
+                                    </Button>
+                                    <StackPanel Grid.Column="3" Orientation="Horizontal">
+                                        <Button Classes="icons"
+                                                Command="{Binding $parent[ItemsControl].((vm:TaskPageViewModel)DataContext).DeleteTaskCommand}"
+                                                CommandParameter="{Binding}">
+                                            <Svg Path="/Assets/delete.svg" Height="18" Width="18"/>
+                                        </Button>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <Button Content="← Назад" Command="{Binding GoBackCommand}" Margin="0,16,0,0"/>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Правая панель: редактор -->
+        <Border Grid.Column="1" Width="400"
+                Background="White"
+                IsVisible="{Binding IsEditorVisible}"
+                Padding="20">
+            <StackPanel Spacing="14">
+                <TextBlock Text="Новая задача" FontSize="20" FontWeight="Bold"
+                           Foreground="#4F46E5"/>
+                <TextBox Watermark="Название задачи" Text="{Binding TaskTitle}"/>
+                <TextBox Watermark="Описание задачи" Text="{Binding TaskDescription}"
+                         Height="80" AcceptsReturn="True" TextWrapping="Wrap"/>
+
+                <Grid ColumnDefinitions="Auto,*">
+                    <TextBlock Grid.Column="0" Text="Приоритет задачи:"
+                               VerticalAlignment="Center" Margin="0,0,12,0"/>
+                    <ComboBox Grid.Column="1"
+                              ItemsSource="{Binding PriorityOptions}"
+                              SelectedItem="{Binding TaskPriorityString}"/>
+                </Grid>
+
+                <Grid ColumnDefinitions="Auto,*">
+                    <TextBlock Grid.Column="0" Text="Дедлайн:"
+                               VerticalAlignment="Center" Margin="0,0,12,0"/>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                        <CalendarDatePicker SelectedDate="{Binding TaskDueDate}"/>
+                        <TimePicker SelectedTime="{Binding TaskDueTime}"/>
+                    </StackPanel>
+                </Grid>
+
+                <Button Content="Добавить задачу" Command="{Binding SaveTaskCommand}"
+                        Background="#4F46E5" Foreground="White"
+                        HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                <Button Content="Отменить" Command="{Binding CancelEditCommand}"
+                        Background="White" Foreground="#4F46E5"
+                        HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

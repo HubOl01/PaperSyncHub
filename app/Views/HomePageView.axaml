@@ -10,38 +10,26 @@
     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="20">
         <Svg Path="/Assets/logo_org_large.svg" Height="50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         
-        <StackPanel Orientation="Horizontal" Spacing="20">
-            <!-- Кнопка с плюсиком -->
-            <Border Background="White" 
-                    Width="120" 
-                    Height="120" 
-                    CornerRadius="12"
-                    BoxShadow="0 4 12 0 #1A000000">
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            
                 <Button Command="{Binding CreateProjectCommand}"
-                        Background="Transparent"
+                        Classes="card"
                         BorderThickness="0"
-                        Width="120"
-                        Height="120"
+                        Width="150"
+                        Height="150"
                         CornerRadius="12">
                     <Svg Path="/Assets/add_plus.svg" Height="50" Width="50"/>
                 </Button>
-            </Border>
-            
-            <!-- Кнопка с папкой -->
-            <Border Background="White" 
-                    Width="120" 
-                    Height="120" 
-                    CornerRadius="12"
-                    BoxShadow="0 4 12 0 #1A000000">
+
+
                 <Button Command="{Binding OpenProjectCommand}"
-                        Background="Transparent"
+                        Classes="card"
                         BorderThickness="0"
-                        Width="120"
-                        Height="120"
+                        Width="150"
+                        Height="150"
                         CornerRadius="12">
                     <Svg Path="/Assets/folders.svg" Height="50" Width="50"/>
                 </Button>
-            </Border>
         </StackPanel>
     </StackPanel>
 </UserControl>

@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:app.ViewModels"
+             xmlns:views="clr-namespace:app.Views"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="app.Views.ProjectPageView"
              x:DataType="vm:ProjectPageViewModel">
@@ -75,10 +76,19 @@
             <!-- Правая панель — редактор (пока пусто) -->
             <ContentControl Grid.Column="1" Content="{Binding SelectedArtifact}"/>
         </Grid>
-
-        <!-- Нижняя панель -->
+        
         <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="8" Margin="8">
             <Button Content="← Назад" Command="{Binding GoBackCommand}"/>
+            <Button Classes="icons" Command="{Binding ShowGitPanelCommand}"
+                    ToolTip.Tip="Синхронизировать изменения">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <Svg Path="/Assets/git_sync.svg" Height="20" Width="20"/>
+                    <TextBlock Text="Синхронизировать изменения" 
+                               FontWeight="Bold" Foreground="Black" 
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
         </StackPanel>
+        
     </Grid>
 </UserControl>

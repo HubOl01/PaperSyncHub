@@ -1,5 +1,6 @@
 ﻿using app.Models;
 using app.Repositories;
+using app.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace app.ViewModels;
@@ -17,6 +18,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public readonly GitCommitRepository GitCommitRepo;
     public readonly ArtifactDependencyRepository ArtifactDependencyRepo;
     public readonly ExecutionLogRepository ExecutionLogRepo;
+    public ProjectPageViewModel? LastProjectPage { get; private set; }
     public MainWindowViewModel(
         ProjectRepository projectRepository,
         ArtifactRepository artifactRepository,
@@ -38,6 +40,14 @@ public partial class MainWindowViewModel : ViewModelBase
     
     public void NavigateToProject(Project project)
     {
-        CurrentPage = new ProjectPageViewModel(project, this, ArtifactRepo, GitCommitRepo);
+        var gitService = new GitService(GitCommitRepo, ArtifactRepo);
+        var vm = new ProjectPageViewModel(project, this, ArtifactRepo, GitCommitRepo, gitService);
+        LastProjectPage = vm;
+        CurrentPage = vm;
+    }
+    
+    public void NavigateToTasks(int projectId)
+    {
+        CurrentPage = new TaskPageViewModel(projectId, TaskRepo, this);
     }
 }

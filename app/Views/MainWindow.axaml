@@ -4,7 +4,8 @@
         x:Class="app.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Title="ОргСтатья"
-        Width="1000" Height="650">
+        Width="1000" Height="650"
+        Background="{DynamicResource PrimaryBackground}">
 
     <ContentControl Content="{Binding CurrentPage}"/>
 

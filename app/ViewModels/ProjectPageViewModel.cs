@@ -2,6 +2,8 @@
 using System.Collections.ObjectModel;
 using app.Models;
 using app.Repositories;
+using app.Services;
+using app.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Task = System.Threading.Tasks.Task;
@@ -14,21 +16,30 @@ public partial class ProjectPageViewModel : ViewModelBase
     private readonly ArtifactRepository _artifactRepo;
     private readonly GitCommitRepository _gitCommitRepo;
     private readonly MainWindowViewModel _main;
+    private readonly GitService _gitService;
+    
+
+    [ObservableProperty] private bool _isGitPanelVisible;
+    [ObservableProperty] private GitPanelViewModel? _gitPanel;
 
     [ObservableProperty] private string _projectName;
     [ObservableProperty] private ObservableCollection<Artifact> _artifacts = new();
     [ObservableProperty] private ObservableCollection<GitCommit> _commits = new();
 
     public ProjectPageViewModel(Project project, MainWindowViewModel main,
-        ArtifactRepository artifactRepo, GitCommitRepository gitCommitRepo)
+        ArtifactRepository artifactRepo, GitCommitRepository gitCommitRepo, GitService gitService )
     {
         _project = project;
         _main = main;
         _artifactRepo = artifactRepo;
         _gitCommitRepo = gitCommitRepo;
         _projectName = project.Name;
-        
+
         _ = LoadDataAsync();
+        
+        _gitService = gitService;
+        GitPanel = new GitPanelViewModel(
+            project.Id, gitService, gitCommitRepo, artifactRepo);
     }
 
     private async Task LoadDataAsync()
@@ -37,6 +48,7 @@ public partial class ProjectPageViewModel : ViewModelBase
         Artifacts = new ObservableCollection<Artifact>(artifacts);
         var commits = await _gitCommitRepo.GetAllAsync(); // потом отфильтруй по проекту
         Commits = new ObservableCollection<GitCommit>(commits);
+        
     }
 
     [RelayCommand]
@@ -53,7 +65,7 @@ public partial class ProjectPageViewModel : ViewModelBase
     {
         _main.CurrentPage = new HomePageViewModel(_main);
     }
-    
+
     [ObservableProperty] private bool _isRenamingProject;
     [ObservableProperty] private string _newProjectName = "";
 
@@ -63,11 +75,13 @@ public partial class ProjectPageViewModel : ViewModelBase
         NewProjectName = ProjectName;
         IsRenamingProject = true;
     }
+
     [RelayCommand]
     private void CancelRename()
     {
         IsRenamingProject = false;
     }
+
     [RelayCommand]
     private async Task ConfirmRename()
     {
@@ -78,18 +92,32 @@ public partial class ProjectPageViewModel : ViewModelBase
             _project.UpdatedAt = DateTime.UtcNow;
             await _main.ProjectRepo.UpdateAsync(_project);
         }
+
         IsRenamingProject = false;
     }
-    
-    [ObservableProperty] 
-    private Artifact? _selectedArtifact;
 
-    [ObservableProperty]
-    private bool _isCommitsPanelVisible;
+    [ObservableProperty] private Artifact? _selectedArtifact;
+
+    [ObservableProperty] private bool _isCommitsPanelVisible;
 
     [RelayCommand]
     private void ShowCommits()
     {
-        IsCommitsPanelVisible = !IsCommitsPanelVisible;
+        _main.NavigateToTasks(_project.Id);
+    }
+    
+    [RelayCommand]
+    private void ShowGitPanel()
+    {
+        var window = new GitPanelWindow
+        {
+            DataContext = GitPanel
+        };
+        // Получаем главное окно как owner
+        if (Avalonia.Application.Current?.ApplicationLifetime 
+            is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            window.ShowDialog(desktop.MainWindow!);
+        }
     }
 }
