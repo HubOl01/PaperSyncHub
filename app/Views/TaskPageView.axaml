@@ -8,7 +8,9 @@
 
         <!-- Левая панель: список задач -->
         <ScrollViewer Grid.Column="0" Padding="16">
+           
             <StackPanel Spacing="12">
+                <StackPanel Orientation="Vertical" Spacing="10">
                 <Grid ColumnDefinitions="*,Auto">
                     <TextBlock Text="Задачи:" FontSize="22" FontWeight="Bold"
                                Foreground="#4F46E5" VerticalAlignment="Center"/>
@@ -17,29 +19,87 @@
                         <Svg Path="/Assets/add_plus.svg" Height="28" Width="28"/>
                     </Button>
                 </Grid>
-
-                <!-- Активные задачи -->
+                    <Grid ColumnDefinitions="*,*,Auto,100">
+                        <TextBlock Grid.Column="0" Text="Название задачи" FontSize="16" FontWeight="Bold"
+                                   Foreground="Gray" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="1" Text="Приоритет" FontSize="16" FontWeight="Bold"
+                                   Foreground="Gray" VerticalAlignment="Center" TextAlignment="Center"/>
+                        <TextBlock Grid.Column="2" Text="Статус" FontSize="16" FontWeight="Bold"
+                                   Foreground="Gray" VerticalAlignment="Center" TextAlignment="Right"/>
+                    </Grid>
+                </StackPanel>
+                
                 <ItemsControl ItemsSource="{Binding ActiveTasks}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="models:TaskItem">
-                            <Border Background="White" CornerRadius="8"
-                                    BoxShadow="0 2 6 0 #18000000" Margin="0,0,0,6" Padding="12,8">
-                                <Grid ColumnDefinitions="*,Auto,Auto,Auto">
+                            <Border Background="White" CornerRadius="20"
+                                    BoxShadow="0 2 6 0 #1A000000" Margin="0,0,0,6" Padding="12,8">
+                                <Grid ColumnDefinitions="*,*,Auto,100">
                                     <TextBlock Grid.Column="0" Text="{Binding Title}"
-                                               FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                               FontWeight="SemiBold" VerticalAlignment="Center" FontSize="15"/>
                                     <!-- Приоритет -->
                                     <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="8,0"
-                                               Text="{Binding Priority, Converter={StaticResource PriorityConverter}}"/>
+                                               Text="{Binding Priority, Converter={StaticResource PriorityConverter}}"
+                                               Foreground="{Binding Priority, Converter={StaticResource PriorityColorConverter}}"
+                                               FontWeight="Bold"
+                                               FontSize="15"
+                                               TextAlignment="Center"
+                                               />
                                     <!-- Статус — кликабельный -->
                                     <Button Grid.Column="2" Classes="transparent"
                                             Command="{Binding $parent[ItemsControl].((vm:TaskPageViewModel)DataContext).CycleStatusCommand}"
                                             CommandParameter="{Binding}"
                                             Margin="8,0">
-                                        <!-- <TextBlock Text="{Binding Status}" FontSize="13"/> -->
-                                        <TextBlock Text="{Binding Status, Converter={StaticResource StatusConverter}}" FontSize="13"/>
+                                        <TextBlock Text="{Binding Status, Converter={StaticResource StatusConverter}}" FontSize="15" FontWeight="Bold" TextAlignment="Right"/>
                                     </Button>
                                     <!-- Редактировать -->
-                                    <StackPanel Grid.Column="3" Orientation="Horizontal">
+                                    <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <Button Classes="icons"
+                                                Command="{Binding $parent[ItemsControl].((vm:TaskPageViewModel)DataContext).EditTaskCommand}"
+                                                CommandParameter="{Binding}">
+                                            <Svg Path="/Assets/edit.svg" Height="18" Width="18"/>
+                                        </Button>
+                                        <Button Classes="icons"
+                                                Command="{Binding $parent[ItemsControl].((vm:TaskPageViewModel)DataContext).DeleteTaskCommand}"
+                                                CommandParameter="{Binding}">
+                                            <Svg Path="/Assets/delete.svg" Height="18" Width="18"/>
+                                        </Button>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                    
+
+                <!-- Завершённые -->
+                <StackPanel Orientation="Vertical" Spacing="5" VerticalAlignment="Stretch" HorizontalAlignment="Left">
+                <TextBlock Text="Завершённые:" FontWeight="Bold" Margin="0,20,0,0" FontSize="16" />
+                <Border Width="200" Height="3" Padding="0" Margin="0 0 0 4" Background="{DynamicResource SecondBackground}" CornerRadius="10"></Border>
+                </StackPanel>
+                <ItemsControl ItemsSource="{Binding DoneTasks}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="models:TaskItem">
+                            <Border Background="White" CornerRadius="20"
+                                    BoxShadow="0 2 6 0 #1A000000" Margin="0,0,0,6" Padding="12,8">
+                                <Grid ColumnDefinitions="*,*,Auto,100">
+                                    <TextBlock Grid.Column="0" Text="{Binding Title}"
+                                               FontWeight="SemiBold" VerticalAlignment="Center" FontSize="15"/>
+                                    <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="8,0"
+                                               Text="{Binding Priority, Converter={StaticResource PriorityConverter}}"
+                                               Foreground="{Binding Priority, Converter={StaticResource PriorityColorConverter}}"
+                                               FontWeight="Bold"
+                                               FontSize="15"
+                                               TextAlignment="Center"/>
+                                    <Button Grid.Column="2" Classes="transparent"
+                                            Command="{Binding $parent[ItemsControl].((vm:TaskPageViewModel)DataContext).CycleStatusCommand}"
+                                            CommandParameter="{Binding}"
+                                            Margin="8,0"
+                                            >
+                                        <TextBlock Text="{Binding Status, Converter={StaticResource StatusConverter}}" FontWeight="Bold"
+                                                   FontSize="15" Foreground="#4CAF50" TextAlignment="Right"/>
+                                    </Button>
+                                    <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Right">
                                         <Button Classes="icons"
                                                 Command="{Binding $parent[ItemsControl].((vm:TaskPageViewModel)DataContext).EditTaskCommand}"
                                                 CommandParameter="{Binding}">
@@ -57,45 +117,12 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
 
-                <!-- Завершённые -->
-                <TextBlock Text="Завершённые:" FontWeight="Bold" Margin="0,12,0,4"/>
-                <ItemsControl ItemsSource="{Binding DoneTasks}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="models:TaskItem">
-                            <Border Background="#F5F5F5" CornerRadius="8"
-                                    Margin="0,0,0,6" Padding="12,8">
-                                <Grid ColumnDefinitions="*,Auto,Auto,Auto">
-                                    <TextBlock Grid.Column="0" Text="{Binding Title}"
-                                               Foreground="Gray" VerticalAlignment="Center"/>
-                                    <Button Grid.Column="2" Classes="transparent"
-                                            Command="{Binding $parent[ItemsControl].((vm:TaskPageViewModel)DataContext).CycleStatusCommand}"
-                                            CommandParameter="{Binding}"
-                                            Margin="8,0">
-                                        <!-- <TextBlock Text="{Binding Status}" FontSize="13" Foreground="#4CAF50"/> -->
-                                        <TextBlock Text="{Binding Status, Converter={StaticResource StatusConverter}}" FontSize="13" Foreground="#4CAF50"/>
-                                    </Button>
-                                    <StackPanel Grid.Column="3" Orientation="Horizontal">
-                                        <Button Classes="icons"
-                                                Command="{Binding $parent[ItemsControl].((vm:TaskPageViewModel)DataContext).DeleteTaskCommand}"
-                                                CommandParameter="{Binding}">
-                                            <Svg Path="/Assets/delete.svg" Height="18" Width="18"/>
-                                        </Button>
-                                    </StackPanel>
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-
-                <Button Content="← Назад" Command="{Binding GoBackCommand}" Margin="0,16,0,0"/>
+                <!-- <Button Content="← Назад" Command="{Binding GoBackCommand}" Margin="0,16,0,0"/> -->
             </StackPanel>
         </ScrollViewer>
-
-        <!-- Правая панель: редактор -->
-        <Border Grid.Column="1" Width="400"
-                Background="White"
-                IsVisible="{Binding IsEditorVisible}"
-                Padding="20">
+        
+        
+            <Border Grid.Column="1" IsVisible="{Binding IsEditorVisible}" Background="White" MinHeight="200" MinWidth="200" Padding="20" CornerRadius=" 10 0 0 10" BoxShadow="0 4 12 0 #1A000000"  Margin="0 0 0 10">
             <StackPanel Spacing="14">
                 <TextBlock Text="Новая задача" FontSize="20" FontWeight="Bold"
                            Foreground="#4F46E5"/>
@@ -108,13 +135,14 @@
                                VerticalAlignment="Center" Margin="0,0,12,0"/>
                     <ComboBox Grid.Column="1"
                               ItemsSource="{Binding PriorityOptions}"
-                              SelectedItem="{Binding TaskPriorityString}"/>
+                              SelectedItem="{Binding TaskPriorityString}"
+                              />
                 </Grid>
 
                 <Grid ColumnDefinitions="Auto,*">
                     <TextBlock Grid.Column="0" Text="Дедлайн:"
                                VerticalAlignment="Center" Margin="0,0,12,0"/>
-                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                    <StackPanel Grid.Column="1" Orientation="Vertical" Spacing="8">
                         <CalendarDatePicker SelectedDate="{Binding TaskDueDate}"/>
                         <TimePicker SelectedTime="{Binding TaskDueTime}"/>
                     </StackPanel>
@@ -122,9 +150,11 @@
 
                 <Button Content="Добавить задачу" Command="{Binding SaveTaskCommand}"
                         Background="#4F46E5" Foreground="White"
+                        FontSize="14"
                         HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
                 <Button Content="Отменить" Command="{Binding CancelEditCommand}"
-                        Background="White" Foreground="#4F46E5"
+                        Classes="transparent"
+                        FontSize="14"
                         HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
             </StackPanel>
         </Border>

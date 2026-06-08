@@ -25,7 +25,7 @@ public partial class TaskPageViewModel : ViewModelBase
     [ObservableProperty] private string _taskTitle = "";
     [ObservableProperty] private string _taskDescription = "";
     [ObservableProperty] private TaskPriority _taskPriority = TaskPriority.Medium;
-    [ObservableProperty] private DateTimeOffset? _taskDueDate;
+    [ObservableProperty] private DateTime? _taskDueDate;
     [ObservableProperty] private TimeSpan _taskDueTime = new TimeSpan(12, 0, 0);
 
     public string[] PriorityOptions => new[] { "Высокий", "Средний", "Низкий" };
@@ -54,7 +54,7 @@ public partial class TaskPageViewModel : ViewModelBase
         TaskTitle = "";
         TaskDescription = "";
         TaskPriority = TaskPriority.Medium;
-        TaskDueDate = DateTimeOffset.Now;
+        TaskDueDate = DateTime.Now;
         TaskDueTime = new TimeSpan(12, 0, 0);
         IsEditorVisible = true;
         TaskPriorityString = "Средний";
@@ -69,7 +69,7 @@ public partial class TaskPageViewModel : ViewModelBase
         TaskPriority = task.Priority;
         if (task.DueDate.HasValue)
         {
-            TaskDueDate = new DateTimeOffset(task.DueDate.Value);
+            TaskDueDate = task.DueDate.Value;
             TaskDueTime = task.DueDate.Value.TimeOfDay;
         }
         IsEditorVisible = true;
@@ -148,7 +148,7 @@ public partial class TaskPageViewModel : ViewModelBase
     [RelayCommand]
     private void GoBack()
     {
-        _main.CurrentPage = _main.LastProjectPage!;
+        _main.LastProjectPage!.CenterContent = null;
     }
     
     public string TaskPriorityString

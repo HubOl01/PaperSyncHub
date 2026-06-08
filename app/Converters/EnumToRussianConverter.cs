@@ -2,6 +2,7 @@
 using System.Globalization;
 using app.Models;
 using Avalonia.Data.Converters;
+using Avalonia.Media;
 
 namespace app.Converters;
 
@@ -45,4 +46,21 @@ public class StatusToRussianConverter : IValueConverter
 
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         => TaskStatus.Todo;
+}
+
+public class PriorityToColorConverter : IValueConverter
+{
+    public static readonly PriorityToColorConverter Instance = new();
+
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => value is TaskPriority p ? p switch
+        {
+            TaskPriority.High => new SolidColorBrush(Color.Parse("#FF4444")),
+            TaskPriority.Medium => new SolidColorBrush(Color.Parse("#FFA500")),
+            TaskPriority.Low => new SolidColorBrush(Color.Parse("#4CAF50")),
+            _ => new SolidColorBrush(Colors.Black)
+        } : new SolidColorBrush(Colors.Black);
+
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => TaskPriority.Medium;
 }

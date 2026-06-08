@@ -25,6 +25,7 @@ public partial class ProjectPageViewModel : ViewModelBase
     [ObservableProperty] private string _projectName;
     [ObservableProperty] private ObservableCollection<Artifact> _artifacts = new();
     [ObservableProperty] private ObservableCollection<GitCommit> _commits = new();
+    [ObservableProperty] private ViewModelBase? _centerContent;
 
     public ProjectPageViewModel(Project project, MainWindowViewModel main,
         ArtifactRepository artifactRepo, GitCommitRepository gitCommitRepo, GitService gitService )
@@ -40,6 +41,7 @@ public partial class ProjectPageViewModel : ViewModelBase
         _gitService = gitService;
         GitPanel = new GitPanelViewModel(
             project.Id, gitService, gitCommitRepo, artifactRepo);
+        CenterContent = null;
     }
 
     private async Task LoadDataAsync()
@@ -103,7 +105,7 @@ public partial class ProjectPageViewModel : ViewModelBase
     [RelayCommand]
     private void ShowTasks()
     {
-        _main.NavigateToTasks(_project.Id);
+        CenterContent = new TaskPageViewModel(_project.Id, _main.TaskRepo, _main);
     }
     
     [RelayCommand]
@@ -119,5 +121,11 @@ public partial class ProjectPageViewModel : ViewModelBase
         {
             window.ShowDialog(desktop.MainWindow!);
         }
+    }
+    
+    [RelayCommand]
+    private void GoHome()
+    {
+        CenterContent = null;
     }
 }
