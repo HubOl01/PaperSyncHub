@@ -76,6 +76,11 @@
         <Setter Property="Background" Value="WhiteSmoke"></Setter>
         <Setter Property="Foreground" Value="{DynamicResource SecondHoverBackground}"></Setter>
     </Style>
-  
+    <Style Selector="CalendarDatePicker">
+        <Setter Property="FontSize" Value="14"/>
+    </Style>
+    <Style Selector="TimePicker">
+        <Setter Property="FontSize" Value="14"/>
+    </Style>
     
 </Styles>
