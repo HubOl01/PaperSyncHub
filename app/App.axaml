@@ -2,13 +2,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="app.App"
              xmlns:local="using:app"
+             xmlns:converters="clr-namespace:app.Converters"
              RequestedThemeVariant="Light">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
              <Application.Resources>
                  <SolidColorBrush x:Key="SecondBackground">#4F46E5</SolidColorBrush>
                  <SolidColorBrush x:Key="SecondHoverBackground">#3730A3</SolidColorBrush>
-                 <SolidColorBrush x:Key="PrimaryBackground">White</SolidColorBrush>
-                 <SolidColorBrush x:Key="PrimaryBarBackground">WhiteSmoke</SolidColorBrush>
+                 <SolidColorBrush x:Key="PrimaryBackground">#F0F0F0</SolidColorBrush>
+                 <SolidColorBrush x:Key="PrimaryBarBackground">White</SolidColorBrush>
+                 
+                 <converters:PriorityToRussianConverter x:Key="PriorityConverter"/>
+                 <converters:StatusToRussianConverter x:Key="StatusConverter"/>
              </Application.Resources>
     <Application.DataTemplates>
         <local:ViewLocator/>
@@ -16,5 +20,6 @@
   
     <Application.Styles>
         <FluentTheme />
+        <StyleInclude Source="avares://app/Styles/AppDefaultStyles.axaml"/>
     </Application.Styles>
 </Application>

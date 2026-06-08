@@ -1,8 +1,72 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:app.ViewModels"
+             xmlns:models="clr-namespace:app.Models"
              x:Class="app.Views.ProjectListView"
              x:DataType="vm:ProjectListViewModel">
-    <TextBlock Text="Список проектов (заглушка)" 
-               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    <Grid RowDefinitions="Auto,*,Auto" Margin="24">
+
+        <!-- Шапка -->
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,16">
+            <TextBlock Text="Проекты" FontSize="24" FontWeight="Bold"
+                       Foreground="#4F46E5" VerticalAlignment="Center"/>
+        </Grid>
+
+        <!-- Список -->
+        <ScrollViewer Grid.Row="1">
+            <StackPanel Spacing="8">
+
+                <!-- Пусто -->
+                <TextBlock Text="Нет созданных проектов."
+                           Foreground="Gray" FontSize="16"
+                           HorizontalAlignment="Center" Margin="0,40,0,0"
+                           IsVisible="{Binding !Projects.Count}"/>
+
+                <ItemsControl ItemsSource="{Binding Projects}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="models:Project">
+                            <Border Background="White" CornerRadius="10"
+                                    BoxShadow="0 2 8 0 #18000000"
+                                    Padding="16,12" Margin="0,0,0,8">
+                                <Grid ColumnDefinitions="*,Auto,Auto">
+
+                                    <!-- Название и дата -->
+                                    <StackPanel Grid.Column="0" Spacing="4"
+                                                VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Name}"
+                                                   FontSize="16" FontWeight="SemiBold"/>
+                                        <TextBlock Text="{Binding CreatedAt, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}"
+                                                   Foreground="Gray" FontSize="12"/>
+                                    </StackPanel>
+
+                                    <!-- Открыть -->
+                                    <Button Grid.Column="1"
+                                            Command="{Binding $parent[ItemsControl].((vm:ProjectListViewModel)DataContext).OpenProjectCommand}"
+                                            CommandParameter="{Binding}"
+                                            Content="Открыть"
+                                            Background="#4F46E5" Foreground="White"
+                                            Margin="0,0,8,0"/>
+
+                                    <!-- Удалить -->
+                                    <Button Grid.Column="2" Classes="icons"
+                                            Command="{Binding $parent[ItemsControl].((vm:ProjectListViewModel)DataContext).DeleteProjectCommand}"
+                                            CommandParameter="{Binding}"
+                                            ToolTip.Tip="Удалить проект">
+                                        <Svg Path="/Assets/delete.svg" Height="22" Width="22"/>
+                                    </Button>
+
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Назад -->
+        <Button Grid.Row="2" Content="← Назад"
+                Command="{Binding GoBackCommand}"
+                Margin="0,12,0,0"/>
+    </Grid>
 </UserControl>
