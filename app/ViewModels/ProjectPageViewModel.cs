@@ -101,7 +101,7 @@ public partial class ProjectPageViewModel : ViewModelBase
     [ObservableProperty] private bool _isCommitsPanelVisible;
 
     [RelayCommand]
-    private void ShowCommits()
+    private void ShowTasks()
     {
         _main.NavigateToTasks(_project.Id);
     }
