@@ -5,6 +5,7 @@
       <map>
         <entry key="App.axaml" value="app.csproj" />
         <entry key="CompletedBinding.axaml" value="app.csproj" />
+        <entry key="Controls/TaskCard.axaml" value="app.csproj" />
         <entry key="Styles/AppDefaultStyles.axaml" value="app.csproj" />
         <entry key="Views/GitPanelView.axaml" value="app.csproj" />
         <entry key="Views/GitPanelWindow.axaml" value="app.csproj" />

@@ -25,8 +25,12 @@ public partial class TaskPageViewModel : ViewModelBase
     [ObservableProperty] private string _taskTitle = "";
     [ObservableProperty] private string _taskDescription = "";
     [ObservableProperty] private TaskPriority _taskPriority = TaskPriority.Medium;
-    [ObservableProperty] private DateTimeOffset? _taskDueDate;
+    [ObservableProperty] private DateTime? _taskDueDate;
     [ObservableProperty] private TimeSpan _taskDueTime = new TimeSpan(12, 0, 0);
+    [ObservableProperty] private bool _isEditingExisting;
+    
+    public string EditorTitle => IsEditingExisting ? "Редактировать задачу" : "Новая задача";
+    public string SaveButtonText => IsEditingExisting ? "Сохранить" : "Добавить задачу";
 
     public string[] PriorityOptions => new[] { "Высокий", "Средний", "Низкий" };
 
@@ -41,10 +45,28 @@ public partial class TaskPageViewModel : ViewModelBase
     private async Task LoadTasksAsync()
     {
         var tasks = await _taskRepo.GetByProjectIdAsync(_projectId);
-        ActiveTasks = new ObservableCollection<TaskItem>(
-            tasks.Where(t => t.Status != TaskStatus.Done && t.Status != TaskStatus.Failed));
+    
+        var active = tasks
+            .Where(t => t.Status != TaskStatus.Done && t.Status != TaskStatus.Failed)
+            .OrderBy(t => t.Status switch
+            {
+                TaskStatus.InProgress => 0,
+                TaskStatus.Todo => 1,
+                _ => 2
+            })
+            .ThenBy(t => t.Priority switch
+            {
+                TaskPriority.High => 0,
+                TaskPriority.Medium => 1,
+                TaskPriority.Low => 2,
+                _ => 3
+            });
+
+        ActiveTasks = new ObservableCollection<TaskItem>(active);
         DoneTasks = new ObservableCollection<TaskItem>(
-            tasks.Where(t => t.Status == TaskStatus.Done || t.Status == TaskStatus.Failed));
+            tasks
+                .Where(t => t.Status == TaskStatus.Done || t.Status == TaskStatus.Failed)
+                .OrderByDescending(t => t.UpdatedAt ?? t.CreatedAt));
     }
 
     [RelayCommand]
@@ -54,10 +76,11 @@ public partial class TaskPageViewModel : ViewModelBase
         TaskTitle = "";
         TaskDescription = "";
         TaskPriority = TaskPriority.Medium;
-        TaskDueDate = DateTimeOffset.Now;
+        TaskDueDate = DateTime.Now;
         TaskDueTime = new TimeSpan(12, 0, 0);
         IsEditorVisible = true;
         TaskPriorityString = "Средний";
+        IsEditingExisting = false;
     }
 
     [RelayCommand]
@@ -69,7 +92,7 @@ public partial class TaskPageViewModel : ViewModelBase
         TaskPriority = task.Priority;
         if (task.DueDate.HasValue)
         {
-            TaskDueDate = new DateTimeOffset(task.DueDate.Value);
+            TaskDueDate = task.DueDate.Value;
             TaskDueTime = task.DueDate.Value.TimeOfDay;
         }
         IsEditorVisible = true;
@@ -80,6 +103,7 @@ public partial class TaskPageViewModel : ViewModelBase
             TaskPriority.Low => "Низкий",
             _ => "Средний"
         };
+        IsEditingExisting = true;
     }
 
     [RelayCommand]
@@ -134,10 +158,8 @@ public partial class TaskPageViewModel : ViewModelBase
     {
         task.Status = task.Status switch
         {
-            TaskStatus.Backlog => TaskStatus.Todo,
             TaskStatus.Todo => TaskStatus.InProgress,
             TaskStatus.InProgress => TaskStatus.Done,
-            TaskStatus.Done => TaskStatus.Backlog,
             _ => TaskStatus.Todo
         };
         task.UpdatedAt = DateTime.UtcNow;
@@ -148,7 +170,7 @@ public partial class TaskPageViewModel : ViewModelBase
     [RelayCommand]
     private void GoBack()
     {
-        _main.CurrentPage = _main.LastProjectPage!;
+        _main.LastProjectPage!.CenterContent = null;
     }
     
     public string TaskPriorityString
@@ -166,5 +188,10 @@ public partial class TaskPageViewModel : ViewModelBase
             };
             OnPropertyChanged();
         }
+    }
+    partial void OnIsEditingExistingChanged(bool value)
+    {
+        OnPropertyChanged(nameof(EditorTitle));
+        OnPropertyChanged(nameof(SaveButtonText));
     }
 }
