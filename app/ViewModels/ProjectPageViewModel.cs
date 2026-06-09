@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using app.Models;
 using app.Repositories;
 using app.Services;
 using app.Views;
+using AvaloniaEdit;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Task = System.Threading.Tasks.Task;
@@ -118,6 +120,20 @@ public partial class ProjectPageViewModel : ViewModelBase
             is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop)
         {
             window.ShowDialog(desktop.MainWindow!);
+        }
+    }
+
+    [RelayCommand]
+    private void SelectArtifact(int id)
+    {
+        SelectedArtifact = Artifacts.FirstOrDefault(Artifact => Artifact.Id == id);
+
+        //To-do: сделать нормальную обработку для типа, пока только открывать редактор при открытии статьи
+        if(SelectedArtifact != null && SelectedArtifact.Type == ArtifactType.Article)
+        {
+            var TextEditor = new TextEditor();
+
+            TextEditor.Load(SelectedArtifact.RelativePath);
         }
     }
 }
