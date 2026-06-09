@@ -15,6 +15,7 @@
         <entry key="Views/ProjectPageView.axaml" value="app.csproj" />
         <entry key="Views/TaskPageView.axaml" value="app.csproj" />
         <entry key="Views/TemplatesPageView.axaml" value="app.csproj" />
+        <entry key="Views/TextEditorView.axaml" value="app.csproj" />
       </map>
     </option>
   </component>

@@ -83,20 +83,21 @@
                                        DockPanel.Dock="Left"/>
                         </DockPanel>
                     </Border>
-                    <ListBox Grid.Row="1" ItemsSource="{Binding Artifacts}">
+                    <ListBox Grid.Row="1" ItemsSource="{Binding Artifacts}"
+                             SelectedItem="{Binding SelectedArtifact}"
+                             SelectionChanged="ListBox_SelectionChanged">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <Button Content="{Binding Title}"
-                                        Command="{Binding $parent[ListBox].((vm:ProjectPageViewModel)DataContext).SelectArtifactCommand}"
-                                        CommandParameter="{Binding Id}">
-                                    <Button.ContextMenu>
+                                <TextBlock Text="{Binding Title}" Padding="8,6"
+                                           Cursor="Hand">
+                                    <TextBlock.ContextMenu>
                                         <ContextMenu>
                                             <MenuItem Header="Удалить"
                                                       Command="{Binding $parent[ListBox].((vm:ProjectPageViewModel)DataContext).DeleteArtifactCommand}"
                                                       CommandParameter="{Binding}"/>
                                         </ContextMenu>
-                                    </Button.ContextMenu>
-                                </Button>
+                                    </TextBlock.ContextMenu>
+                                </TextBlock>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
