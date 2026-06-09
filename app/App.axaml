@@ -13,6 +13,9 @@
                  
                  <converters:PriorityToRussianConverter x:Key="PriorityConverter"/>
                  <converters:StatusToRussianConverter x:Key="StatusConverter"/>
+                 <converters:PriorityToColorConverter x:Key="PriorityColorConverter"/>
+                 <converters:PriorityStringToColorConverter x:Key="PriorityStringToColorConverter"/>
+                 <converters:StatusToColorConverter x:Key="StatusColorConverter"/>
              </Application.Resources>
     <Application.DataTemplates>
         <local:ViewLocator/>

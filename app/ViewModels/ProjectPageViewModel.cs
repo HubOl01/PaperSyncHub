@@ -5,6 +5,7 @@ using app.Models;
 using app.Repositories;
 using app.Services;
 using app.Views;
+using Avalonia.Platform.Storage;
 using AvaloniaEdit;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -27,6 +28,7 @@ public partial class ProjectPageViewModel : ViewModelBase
     [ObservableProperty] private string _projectName;
     [ObservableProperty] private ObservableCollection<Artifact> _artifacts = new();
     [ObservableProperty] private ObservableCollection<GitCommit> _commits = new();
+    [ObservableProperty] private ViewModelBase? _centerContent;
 
     public ProjectPageViewModel(Project project, MainWindowViewModel main,
         ArtifactRepository artifactRepo, GitCommitRepository gitCommitRepo, GitService gitService )
@@ -42,6 +44,7 @@ public partial class ProjectPageViewModel : ViewModelBase
         _gitService = gitService;
         GitPanel = new GitPanelViewModel(
             project.Id, gitService, gitCommitRepo, artifactRepo);
+        CenterContent = null;
     }
 
     private async Task LoadDataAsync()
@@ -105,7 +108,7 @@ public partial class ProjectPageViewModel : ViewModelBase
     [RelayCommand]
     private void ShowTasks()
     {
-        _main.NavigateToTasks(_project.Id);
+        CenterContent = new TaskPageViewModel(_project.Id, _main.TaskRepo, _main);
     }
     
     [RelayCommand]
@@ -121,6 +124,47 @@ public partial class ProjectPageViewModel : ViewModelBase
         {
             window.ShowDialog(desktop.MainWindow!);
         }
+    }
+    
+    [RelayCommand]
+    private void GoHome()
+    {
+        CenterContent = null;
+    }
+    
+    [RelayCommand]
+    private async Task AddArtifactFromFile()
+    {
+        if (Avalonia.Application.Current?.ApplicationLifetime 
+            is not Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop)
+            return;
+
+        var files = await desktop.MainWindow!.StorageProvider.OpenFilePickerAsync(
+            new FilePickerOpenOptions
+            {
+                AllowMultiple = true,
+                Title = "Выберите файлы артефактов"
+            });
+
+        foreach (var file in files)
+        {
+            var artifact = new Artifact
+            {
+                ProjectId = _project.Id,
+                Title = file.Name,
+                RelativePath = file.Path.LocalPath,
+                Context = "",
+                Type = ArtifactType.Note
+            };
+            await _artifactRepo.AddAsync(artifact);
+            Artifacts.Add(artifact);
+        }
+    }
+    [RelayCommand]
+    private async Task DeleteArtifact(Artifact artifact)
+    {
+        await _artifactRepo.DeleteAsync(artifact);
+        Artifacts.Remove(artifact);
     }
 
     [RelayCommand]

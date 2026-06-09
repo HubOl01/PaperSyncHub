@@ -13,11 +13,9 @@
         <Border Background="White" MinWidth="20" BoxShadow="0 4 12 0 #1A000000" Margin="0 0 0 10">
             
         <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto">
-            <Button Classes="transparent" Command="{Binding SaveProjectCommand}">
+            <Button Classes="transparent" Command="{Binding GoHomeCommand}">
                 <Svg Path="/Assets/logo_org.svg" Height="30" Margin="10 0 0 0 "/>
             </Button>
-            <!-- Клик по названию — через Interaction Trigger или кнопку-призрак -->
-            <!-- Вместо Button с TextBlock -->
             <Panel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
     
                 <!-- Режим просмотра: клик активирует редактирование -->
@@ -65,42 +63,52 @@
         <Grid Grid.Row="1" ColumnDefinitions="300,*">
             <!-- Левая панель артефактов -->
             <Border Background="White" MinHeight="200" MinWidth="200" CornerRadius=" 0 10 10 0" BoxShadow="0 4 12 0 #1A000000"  Margin="0 0 10 10">
-                <StackPanel Margin="10" >
-                    <Border Height="50" BorderThickness="0 0 0 1.3" BorderBrush="Black">
+                <Grid RowDefinitions="Auto,*" Margin="10">
+                    <Border Grid.Row="0" Height="50" BorderThickness="0 0 0 1.3" BorderBrush="Black">
                         <DockPanel LastChildFill="True"
                                    VerticalAlignment="Center">
         
                             <Button DockPanel.Dock="Right" 
                                     Classes="icons"
+                                    Command="{Binding AddArtifactFromFileCommand}"
                                     VerticalAlignment="Center">
                                 <Svg Path="/Assets/add_doc.svg" Height="25" Width="25"/>
                             </Button>
         
                             <TextBlock Text="Структура проекта:" 
                                        FontWeight="Medium" 
-                                       FontSize="18" 
+                                       FontSize="16" 
                                        Margin="0,0,0,8"
                                        VerticalAlignment="Center"
                                        DockPanel.Dock="Left"/>
                         </DockPanel>
                     </Border>
-                    <ListBox ItemsSource="{Binding Artifacts}">
+                    <ListBox Grid.Row="1" ItemsSource="{Binding Artifacts}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <Button Content="{Binding Title}" 
-                                <TextBlock Text="{Binding Title}"/>
+                                <TextBlock Text="{Binding Title}">
+                                    <TextBlock.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Удалить"
+                                                      Command="{Binding $parent[ListBox].((vm:ProjectPageViewModel)DataContext).DeleteArtifactCommand}"
+                                                      CommandParameter="{Binding}"/>
+                                        </ContextMenu>
+                                    </TextBlock.ContextMenu>
+                                </TextBlock>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
-                </StackPanel>
+                </Grid>
             </Border>
            
-            <!-- Правая панель — редактор (пока пусто) -->
-            <!--<ContentControl Grid.Column="1" Content="{Binding SelectedArtifact}/>-->
-            <!--<AvaloniaEdit:TextEditor Document="{Binding SelectedArtifact}">-->
-
-            <!--</AvaloniaEdit:TextEditor>-->
-
+            <!-- Правая панель — редактор или планировщик, переключаются между собой -->
+            <ContentControl Grid.Column="1" Content="{Binding CenterContent}">
+                <ContentControl.DataTemplates>
+                    <DataTemplate DataType="{x:Type vm:TaskPageViewModel}">
+                        <views:TaskPageView/>
+                    </DataTemplate>
+                </ContentControl.DataTemplates>
+            </ContentControl>
         </Grid>
         
         <Border Grid.Row="2" Background="White" MinWidth="20" BoxShadow="0 4 12 4 #1A000000" Margin="0 10 0 0">
@@ -110,8 +118,8 @@
                     ToolTip.Tip="Синхронизировать изменения">
                 <StackPanel Orientation="Horizontal" Spacing="6">
                     <Svg Path="/Assets/git_sync.svg" Height="20" Width="20"/>
-                    <TextBlock Text="Синхронизировать изменения" 
-                               FontWeight="Bold" Foreground="Black" 
+                    <TextBlock Text="Синхронизировать изменения"
+                               FontWeight="Bold" Foreground="Black"
                                FontSize="12"
                                VerticalAlignment="Center"/>
                 </StackPanel>
