@@ -1,8 +1,8 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:app="using:app"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:AvaloniaEdit="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit"
              xmlns:vm="clr-namespace:app.ViewModels"
              xmlns:views="clr-namespace:app.Views"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
@@ -86,15 +86,17 @@
                     <ListBox Grid.Row="1" ItemsSource="{Binding Artifacts}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Title}">
-                                    <TextBlock.ContextMenu>
+                                <Button Content="{Binding Title}"
+                                        Command="{Binding $parent[ListBox].((vm:ProjectPageViewModel)DataContext).SelectArtifactCommand}"
+                                        CommandParameter="{Binding Id}">
+                                    <Button.ContextMenu>
                                         <ContextMenu>
                                             <MenuItem Header="Удалить"
                                                       Command="{Binding $parent[ListBox].((vm:ProjectPageViewModel)DataContext).DeleteArtifactCommand}"
                                                       CommandParameter="{Binding}"/>
                                         </ContextMenu>
-                                    </TextBlock.ContextMenu>
-                                </TextBlock>
+                                    </Button.ContextMenu>
+                                </Button>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
@@ -106,6 +108,9 @@
                 <ContentControl.DataTemplates>
                     <DataTemplate DataType="{x:Type vm:TaskPageViewModel}">
                         <views:TaskPageView/>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:TextEditorViewModel}">
+                        <views:TextEditorView/>
                     </DataTemplate>
                 </ContentControl.DataTemplates>
             </ContentControl>
