@@ -4,6 +4,7 @@ using app.Models;
 using app.Repositories;
 using app.Services;
 using app.Views;
+using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Task = System.Threading.Tasks.Task;
@@ -127,5 +128,40 @@ public partial class ProjectPageViewModel : ViewModelBase
     private void GoHome()
     {
         CenterContent = null;
+    }
+    
+    [RelayCommand]
+    private async Task AddArtifactFromFile()
+    {
+        if (Avalonia.Application.Current?.ApplicationLifetime 
+            is not Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop)
+            return;
+
+        var files = await desktop.MainWindow!.StorageProvider.OpenFilePickerAsync(
+            new FilePickerOpenOptions
+            {
+                AllowMultiple = true,
+                Title = "Выберите файлы артефактов"
+            });
+
+        foreach (var file in files)
+        {
+            var artifact = new Artifact
+            {
+                ProjectId = _project.Id,
+                Title = file.Name,
+                RelativePath = file.Path.LocalPath,
+                Context = "",
+                Type = ArtifactType.Note
+            };
+            await _artifactRepo.AddAsync(artifact);
+            Artifacts.Add(artifact);
+        }
+    }
+    [RelayCommand]
+    private async Task DeleteArtifact(Artifact artifact)
+    {
+        await _artifactRepo.DeleteAsync(artifact);
+        Artifacts.Remove(artifact);
     }
 }
