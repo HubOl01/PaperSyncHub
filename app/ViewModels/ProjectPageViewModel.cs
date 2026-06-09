@@ -70,7 +70,7 @@ public partial class ProjectPageViewModel : ViewModelBase
     [RelayCommand]
     private void ShowTemplates()
     {
-        _main.CurrentPage = new TemplatesPageViewModel(_main);
+        CenterContent = new TemplatesPageViewModel(_main);
         // Если хочешь отдельную страницу вместо CenterContent:
         // _main.CurrentPage = new TemplatesPageViewModel(_main);
     }
@@ -191,8 +191,13 @@ public partial class ProjectPageViewModel : ViewModelBase
         }
     }
 
+    // private void ShowTextEditor(string relativePath)
+    // {
+    //     CenterContent = new TextEditorViewModel(relativePath);
+    // }
     private void ShowTextEditor(string relativePath)
     {
-        CenterContent = new TextEditorViewModel(relativePath);
+        CenterContent = new TextEditorViewModel(relativePath, 
+            onClose: () => CenterContent = null);
     }
 }
