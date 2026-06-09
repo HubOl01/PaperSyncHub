@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Linq;
 using app.Models;
 using app.Repositories;
 using app.Services;
 using app.Views;
+using Avalonia.Controls;
 using Avalonia.Platform.Storage;
+using AvaloniaEdit;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Task = System.Threading.Tasks.Task;
@@ -61,6 +65,14 @@ public partial class ProjectPageViewModel : ViewModelBase
         _project.UpdatedAt = DateTime.UtcNow;
         await _main.ProjectRepo.UpdateAsync(_project);
         // Здесь же создавай GitCommit-снимок
+    }
+    
+    [RelayCommand]
+    private void ShowTemplates()
+    {
+        _main.CurrentPage = new TemplatesPageViewModel(_main);
+        // Если хочешь отдельную страницу вместо CenterContent:
+        // _main.CurrentPage = new TemplatesPageViewModel(_main);
     }
 
     [RelayCommand]
@@ -152,7 +164,7 @@ public partial class ProjectPageViewModel : ViewModelBase
                 Title = file.Name,
                 RelativePath = file.Path.LocalPath,
                 Context = "",
-                Type = ArtifactType.Note
+                Type = ArtifactType.Article
             };
             await _artifactRepo.AddAsync(artifact);
             Artifacts.Add(artifact);
@@ -163,5 +175,24 @@ public partial class ProjectPageViewModel : ViewModelBase
     {
         await _artifactRepo.DeleteAsync(artifact);
         Artifacts.Remove(artifact);
+    }
+
+    [RelayCommand]
+    private void SelectArtifact(int id)
+    {
+        Debug.WriteLine("Works ID: " + id);
+
+        SelectedArtifact = Artifacts.FirstOrDefault(Artifact => Artifact.Id == id);
+
+        //To-do: сделать нормальную обработку для типа, пока только открывать редактор при открытии статьи
+        if(SelectedArtifact != null && SelectedArtifact.Type == ArtifactType.Article)
+        {
+            ShowTextEditor(SelectedArtifact.RelativePath);
+        }
+    }
+
+    private void ShowTextEditor(string relativePath)
+    {
+        CenterContent = new TextEditorViewModel(relativePath);
     }
 }
