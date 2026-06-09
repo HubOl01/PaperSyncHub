@@ -1,0 +1,103 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:app.ViewModels"
+             xmlns:models="clr-namespace:app.Models"
+             x:Class="app.Views.TemplatesPageView"
+             x:DataType="vm:TemplatesPageViewModel">
+
+    <Grid RowDefinitions="Auto,*">
+        
+        <Border Grid.Row="0" Background="White" BoxShadow="0 2 8 0 #18000000" Padding="16,10">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <TextBlock Text="Шаблоны:" FontSize="22" FontWeight="Bold"
+                           Foreground="#4F46E5" VerticalAlignment="Center"/>
+                <TextBox Grid.Column="1" Watermark="Поиск шаблонов..."
+                         Text="{Binding SearchTerm}" Margin="20,0" MaxWidth="300"/>
+                <Button Grid.Column="2" Classes="transparent" Command="{Binding GoBackCommand}"
+                        Content="← Назад"/>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="1" ColumnDefinitions="200,*,280">
+            
+            <StackPanel Margin="12" Spacing="8">
+                <Button Content="Все шаблоны"    Command="{Binding SetFilterCommand}" CommandParameter="all"        HorizontalAlignment="Stretch"/>
+                <Button Content="По ГОСТу"       Command="{Binding SetFilterCommand}" CommandParameter="blank"       HorizontalAlignment="Stretch"/>
+                <Button Content="Научные статьи" Command="{Binding SetFilterCommand}" CommandParameter="scientific"  HorizontalAlignment="Stretch"/>
+                <Button Content="Академические"  Command="{Binding SetFilterCommand}" CommandParameter="academic"   HorizontalAlignment="Stretch"/>
+            </StackPanel>
+            
+            <ScrollViewer Grid.Column="1" Padding="12">
+                <ItemsControl ItemsSource="{Binding FilteredTemplates}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="models:ArticleTemplate">
+                            <Border Width="200" Height="160" Margin="8" Padding="14"
+                                    Background="White" CornerRadius="12"
+                                    BoxShadow="0 2 8 0 #18000000"
+                                    Cursor="Hand">
+                                <Border.Styles>
+                                    <Style Selector="Border:pointerover">
+                                        <Setter Property="BoxShadow" Value="0 4 16 0 #304F46E5"/>
+                                    </Style>
+                                </Border.Styles>
+                                <StackPanel Spacing="6">
+                                    <Button Classes="transparent" Padding="0"
+                                            Command="{Binding $parent[ItemsControl].((vm:TemplatesPageViewModel)DataContext).SelectTemplateCommand}"
+                                            CommandParameter="{Binding}"
+                                            HorizontalAlignment="Stretch" HorizontalContentAlignment="Left">
+                                        <StackPanel Spacing="4">
+                                            <TextBlock Text="{Binding Icon}" FontSize="28"/>
+                                            <TextBlock Text="{Binding Title}" FontWeight="Bold" FontSize="13"
+                                                       TextWrapping="Wrap"/>
+                                            <TextBlock Text="{Binding Description}" FontSize="11"
+                                                       Foreground="Gray" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <!-- Панель предпросмотра -->
+            <Border Grid.Column="2" Background="White" Padding="16"
+                    BoxShadow="-2 0 8 0 #12000000"
+                    IsVisible="{Binding SelectedTemplate, Converter={x:Static ObjectConverters.IsNotNull}}">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="{Binding SelectedTemplate.Title}"
+                               FontSize="18" FontWeight="Bold" Foreground="#4F46E5"
+                               TextWrapping="Wrap"/>
+                    <TextBlock Text="{Binding SelectedTemplate.Description}"
+                               Foreground="Gray" TextWrapping="Wrap"/>
+
+                    <!-- Макет структуры -->
+                    <Border Background="#F5F5FF" CornerRadius="8" Padding="12">
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="Название работы" FontWeight="Bold" FontSize="14"/>
+                            <TextBlock Text="Автор • Аффилиация" Foreground="Gray" FontSize="12"/>
+                            <Rectangle Height="1" Fill="#DDD"/>
+                            <TextBlock Text="Аннотация" FontWeight="SemiBold" FontSize="12"/>
+                            <TextBlock Text="1. Введение" FontSize="11"/>
+                            <TextBlock Text="2. Обзор литературы" FontSize="11"/>
+                            <TextBlock Text="3. Методика" FontSize="11"/>
+                            <TextBlock Text="4. Результаты" FontSize="11"/>
+                            <TextBlock Text="5. Заключение" FontSize="11"/>
+                            <TextBlock Text="Список литературы" FontSize="11" Foreground="#4F46E5"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Button Content="Применить шаблон"
+                            Command="{Binding ApplyTemplateCommand}"
+                            CommandParameter="{Binding SelectedTemplate}"
+                            HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

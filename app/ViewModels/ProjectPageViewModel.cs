@@ -59,6 +59,14 @@ public partial class ProjectPageViewModel : ViewModelBase
         await _main.ProjectRepo.UpdateAsync(_project);
         // Здесь же создавай GitCommit-снимок
     }
+    
+    [RelayCommand]
+    private void ShowTemplates()
+    {
+        _main.CurrentPage = new TemplatesPageViewModel(_main);
+        // Если хочешь отдельную страницу вместо CenterContent:
+        // _main.CurrentPage = new TemplatesPageViewModel(_main);
+    }
 
     [RelayCommand]
     private void GoBack()
