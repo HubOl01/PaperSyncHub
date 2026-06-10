@@ -46,6 +46,8 @@ public partial class TextEditorViewModel : ViewModelBase
             : "";
     
         _textDocument = new TextDocument(content);
+        _textDocument.TextChanged += (_, _) => MarkdownText = _textDocument.Text;
+        MarkdownText = content;
     }
 
     [RelayCommand]
