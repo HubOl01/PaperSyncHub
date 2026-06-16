@@ -1,0 +1,85 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:md="clr-namespace:Markdown.Avalonia;assembly=Markdown.Avalonia"
+             xmlns:viewmodels="using:app.ViewModels"
+             xmlns:AvaloniaEdit="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit"
+             x:Class="app.Views.TextEditorView"
+             x:DataType="viewmodels:TextEditorViewModel"
+             >
+  
+    <!-- <StackPanel> -->
+    <!--   <AvaloniaEdit:TextEditor FontSize="26" Document="{Binding TextDocument}"/>   -->
+    <!-- </StackPanel> -->
+     <Grid RowDefinitions="Auto,*">
+        
+        <!-- Тулбар над редактором -->
+        <Border Grid.Row="0" Background="White" Padding="8,6"
+                BoxShadow="0 2 4 0 #18000000">
+            <Grid ColumnDefinitions="Auto,Auto,*,Auto,Auto,Auto,Auto">
+                
+                <!-- Библиография -->
+                <Button Grid.Column="0" Classes="icons" ToolTip.Tip="Библиография">
+                    <Svg Path="/Assets/bibliography.svg" Height="24" Width="24"/>
+                </Button>
+                
+                <!-- Шаблоны -->
+                <Button Grid.Column="1" Classes="icons" ToolTip.Tip="Шаблоны">
+                    <Svg Path="/Assets/templates_2.svg" Height="24" Width="24"/>
+                </Button>
+                
+                <!-- Антиплагиат -->
+                <Button Grid.Column="3" Classes="icons" ToolTip.Tip="Антиплагиат">
+                    <Svg Path="/Assets/antiplagiat.svg" Height="24" Width="24"/>
+                </Button>
+                
+                <!-- ИИ -->
+                <Button Grid.Column="4" Classes="icons" ToolTip.Tip="ИИ-помощник">
+                    <Svg Path="/Assets/ai.svg" Height="24" Width="24"/>
+                </Button>
+                
+                <!-- Сохранить -->
+                <Button Grid.Column="5" Classes="icons" 
+                        Command="{Binding SaveFileCommand}"
+                        ToolTip.Tip="Сохранить">
+                    <Svg Path="/Assets/save.svg" Height="24" Width="24"/>
+                </Button>
+                
+                <!-- Закрыть -->
+                <Button Grid.Column="6" Classes="icons"
+                        Command="{Binding CloseFileCommand}"
+                        ToolTip.Tip="Закрыть файл">
+                    <Svg Path="/Assets/close.svg" Height="24" Width="24"/>
+                </Button>
+            </Grid>
+        </Border>
+        
+        <!-- Редактор -->
+        <!-- <Border Grid.Row="1" Margin="16" CornerRadius="8" -->
+        <!--         BorderBrush="#4F46E5" BorderThickness="2" -->
+        <!--         Background="White"> -->
+        <!--     <AvaloniaEdit:TextEditor  -->
+        <!--         FontSize="16" -->
+        <!--         Document="{Binding TextDocument}" -->
+        <!--         ShowLineNumbers="False" -->
+        <!--         Padding="20" -->
+        <!--         WordWrap="True" -->
+        <!--         FontFamily="Inter"/> -->
+        <!-- </Border> -->
+        <Grid Grid.Row="1" ColumnDefinitions="*,*">
+            <Border Margin="16,16,8,16" CornerRadius="8"
+                    BorderBrush="#4F46E5" BorderThickness="2" Background="White">
+                <AvaloniaEdit:TextEditor
+                    FontSize="16" Document="{Binding TextDocument}"
+                    ShowLineNumbers="False" Padding="20"
+                    WordWrap="True" FontFamily="Inter"/>
+            </Border>
+
+            <ScrollViewer Grid.Column="1" Margin="8,16,16,16">
+                <md:MarkdownScrollViewer Markdown="{Binding MarkdownText}"/>
+            </ScrollViewer>
+        </Grid>
+        
+    </Grid>
+</UserControl>

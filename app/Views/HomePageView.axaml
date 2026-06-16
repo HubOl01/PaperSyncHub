@@ -39,7 +39,7 @@
                     <Border Background="White" CornerRadius="10"
                             BoxShadow="0 2 8 0 #18000000"
                             Padding="16,12" Margin="0,0,0,8">
-                        <StackPanel Spacing="20" Orientation="Horizontal">
+                        <Grid ColumnDefinitions="*,Auto">
                             <!-- Название и дата -->
                             <StackPanel Grid.Column="0" Spacing="4"
                                         VerticalAlignment="Center">
@@ -58,7 +58,7 @@
                                     FontSize="12"
                                     Background="#4F46E5" Foreground="White"
                                     Margin="0,0,8,0"/>
-                        </StackPanel>
+                        </Grid>
                     </Border>
                 </DataTemplate>
             </ContentControl.ContentTemplate>

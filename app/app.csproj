@@ -8,19 +8,23 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <AvaloniaResource Include="Assets\**"/>
+        <AvaloniaResource Include="Assets\**" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="12.0.1"/>
-        <PackageReference Include="Avalonia.Desktop" Version="12.0.1"/>
-        <PackageReference Include="Avalonia.Themes.Fluent" Version="12.0.1"/>
-        <PackageReference Include="Avalonia.Fonts.Inter" Version="12.0.1"/>
+        <PackageReference Include="Avalonia" Version="12.0.1" />
+        <PackageReference Include="Avalonia.AvaloniaEdit" Version="12.0.0" />
+        <PackageReference Include="Avalonia.Desktop" Version="12.0.1" />
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="12.0.1" />
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="12.0.1" />
         <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.1">
             <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.1"/>
+        <PackageReference Include="ClassIsland.Markdown.Avalonia" Version="12.0.0" />
+        <PackageReference Include="ClassIsland.Markdown.Avalonia.Svg" Version="12.0.0" />
+        <PackageReference Include="ClassIsland.Markdown.Avalonia.SyntaxHigh" Version="12.0.0" />
+        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.1" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.8" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.8">
           <PrivateAssets>all</PrivateAssets>
@@ -32,6 +36,5 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Svg.Controls.Skia.Avalonia" Version="12.0.0.11" />
     </ItemGroup>
 </Project>
